@@ -4,12 +4,29 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ProductCard from "./components/ProductCard";
 import CartSidebar from "./components/CartSidebar";
+import CategoryFilter from "./components/CategoryFilter";
+import SearchBar from "./components/SearchBar";
+import ProductRecommendations from "./components/ProductRecommendations";
+import WishlistPage from "./components/WishlistPage";
+import ProductDetailModal from "./components/ProductDetailModal";
 
 function App() {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [cartOpen, setCartOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [view, setView] = useState("products");
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [recentlyViewed, setRecentlyViewed] = useState(() => {
+    const saved = localStorage.getItem("recentlyViewed");
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [wishlist, setWishlist] = useState(() => {
+    const saved = localStorage.getItem("wishlist");
+    return saved ? JSON.parse(saved) : [];
+  });
 
   // Load cart from localStorage on first render
   const [cart, setCart] = useState(() => {
@@ -69,6 +86,63 @@ function App() {
     .reduce((sum, i) => sum + i.price * i.quantity, 0)
     .toFixed(2);
 
+  // Extract unique categories from products
+  const categories = [...new Set(products.map((p) => p.category))].sort();
+
+  // Filter products based on selected category and search term
+  let filteredProducts = selectedCategory
+    ? products.filter((p) => p.category === selectedCategory)
+    : products;
+
+  filteredProducts = filteredProducts.filter((p) =>
+    p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    p.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Add to recently viewed
+  const addToRecentlyViewed = (product) => {
+    const updated = [product, ...recentlyViewed.filter((p) => p.id !== product.id)].slice(0, 5);
+    setRecentlyViewed(updated);
+    localStorage.setItem("recentlyViewed", JSON.stringify(updated));
+  };
+
+  // Toggle wishlist
+  const toggleWishlist = (product) => {
+    const isWishlisted = wishlist.some((p) => p.id === product.id);
+    if (isWishlisted) {
+      const updated = wishlist.filter((p) => p.id !== product.id);
+      setWishlist(updated);
+      localStorage.setItem("wishlist", JSON.stringify(updated));
+    } else {
+      const updated = [...wishlist, product];
+      setWishlist(updated);
+      localStorage.setItem("wishlist", JSON.stringify(updated));
+    }
+  };
+
+  const removeFromWishlist = (id) => {
+    const updated = wishlist.filter((p) => p.id !== id);
+    setWishlist(updated);
+    localStorage.setItem("wishlist", JSON.stringify(updated));
+  };
+
+  const openProductDetail = (product) => {
+    setSelectedProduct(product);
+    addToRecentlyViewed(product);
+  };
+
+  const closeProductDetail = () => {
+    setSelectedProduct(null);
+  };
+
+  const openWishlist = () => {
+    setView("wishlist");
+  };
+
+  const backToShop = () => {
+    setView("products");
+  };
+
   // Conditional rendering — loading
   if (isLoading) {
     return (
@@ -95,27 +169,127 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-cyan-50">
-      <Header cartCount={cartCount} onCartClick={() => setCartOpen(true)} />
+      <Header
+        cartCount={cartCount}
+        wishlistCount={wishlist.length}
+        onCartClick={() => setCartOpen(true)}
+        onWishlistClick={openWishlist}
+        currentView={view}
+      />
 
-      <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-10">
-        <div className="mb-8">
-          <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-600 bg-clip-text text-transparent mb-2">All Products</h2>
-          <p className="text-gray-600 text-lg">Explore our curated collection</p>
-        </div>
+      {view === 'products' ? (
+        <>
+          <CategoryFilter
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onCategoryChange={setSelectedCategory}
+          />
 
-        {/* Responsive grid — lists & keys */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onAddToCart={addToCart}
-            />
-          ))}
-        </div>
-      </main>
+          <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-10">
+            {/* Search Bar */}
+            <div className="mb-8 flex flex-col items-center gap-8">
+              <SearchBar
+                onSearch={setSearchTerm}
+                placeholder="Search products by name, description, or category..."
+              />
 
-      {/* Conditional rendering — show cart only when open */}
+              {recentlyViewed.length > 0 && (
+                <div className="w-full bg-white/90 border border-blue-100 shadow-sm rounded-3xl p-5">
+                  <div className="flex items-center justify-between gap-3 mb-4">
+                    <div>
+                      <h3 className="text-xl font-semibold text-gray-900">Recently Viewed</h3>
+                      <p className="text-gray-500 text-sm">Tap a product to revisit its details.</p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                    {recentlyViewed.map((product) => (
+                      <button
+                        key={product.id}
+                        onClick={() => openProductDetail(product)}
+                        className="text-left bg-blue-50 rounded-3xl p-3 hover:shadow-lg transition-all"
+                      >
+                        <div className="overflow-hidden rounded-2xl mb-3 h-24 bg-white">
+                          <img
+                            src={product.thumbnail}
+                            alt={product.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <p className="font-semibold text-gray-900 text-sm truncate">{product.title}</p>
+                        <p className="text-sm text-blue-600 font-bold mt-1">₹{product.price}</p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="mb-8">
+              <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-600 bg-clip-text text-transparent mb-2">
+                {selectedCategory
+                  ? `${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} Products`
+                  : 'All Products'}
+              </h2>
+              <p className="text-gray-600 text-lg">
+                {searchTerm
+                  ? `Found ${filteredProducts.length} product${filteredProducts.length !== 1 ? 's' : ''} matching "${searchTerm}"`
+                  : selectedCategory
+                  ? `Showing ${filteredProducts.length} ${selectedCategory} product${filteredProducts.length !== 1 ? 's' : ''}`
+                  : `Explore our curated collection of ${products.length} products`}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
+              {filteredProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onAddToCart={addToCart}
+                  cart={cart}
+                  wishlist={wishlist}
+                  onWishlistToggle={toggleWishlist}
+                  onViewDetails={openProductDetail}
+                />
+              ))}
+            </div>
+
+            {filteredProducts.length === 0 && (
+              <div className="text-center py-16">
+                <p className="text-6xl mb-3">🔍</p>
+                <p className="text-gray-500 text-xl font-medium">No products found</p>
+                <p className="text-gray-400 text-sm mt-2">Try adjusting your search or filters</p>
+              </div>
+            )}
+
+            {filteredProducts.length > 0 && (
+              <ProductRecommendations
+                products={products.filter((p) => !filteredProducts.find((fp) => fp.id === p.id))}
+                title="You Might Also Like"
+                limit={5}
+              />
+            )}
+          </main>
+        </>
+      ) : (
+        <WishlistPage
+          wishlist={wishlist}
+          onAddToCart={addToCart}
+          onRemoveFromWishlist={removeFromWishlist}
+          onViewDetails={openProductDetail}
+          onBackToShop={backToShop}
+        />
+      )}
+
+      {selectedProduct && (
+        <ProductDetailModal
+          product={selectedProduct}
+          onClose={closeProductDetail}
+          onAddToCart={addToCart}
+          onWishlistToggle={toggleWishlist}
+          wishlist={wishlist}
+        />
+      )}
+
       {cartOpen && (
         <CartSidebar
           cart={cart}
