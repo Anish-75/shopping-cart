@@ -60,7 +60,7 @@ function SearchBar({ onSearch, placeholder = "Search products..." }) {
           )}
         </div>
       </div>
-      <p className="mt-3 text-sm text-gray-500">Search by product name, description, or category.</p>
+      
     </div>
   );
 }

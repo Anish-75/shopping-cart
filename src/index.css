@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gradient-to-br from-slate-200 via-slate-100 to-slate-300;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  /* Gradient text utility */
+  .gradient-text {
+    @apply bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-600 bg-clip-text text-transparent;
+  }
+}

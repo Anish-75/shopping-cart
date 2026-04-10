@@ -146,7 +146,7 @@ function App() {
   // Conditional rendering — loading
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 to-cyan-50">
+      <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-slate-200 via-slate-100 to-slate-300">
         <div className="flex flex-col items-center gap-4">
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 border-t-blue-600" />
           <p className="text-blue-600 font-semibold text-lg">Loading products...</p>
@@ -158,7 +158,7 @@ function App() {
   // Conditional rendering — error
   if (error) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 to-cyan-50">
+      <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-slate-200 via-slate-100 to-slate-300">
         <div className="bg-white p-8 rounded-2xl shadow-lg border border-red-200 text-center">
           <p className="text-3xl mb-3">⚠️</p>
           <p className="text-red-600 text-xl font-semibold">{error}</p>
@@ -168,7 +168,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-cyan-50">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-200 via-slate-100 to-slate-300">
       <Header
         cartCount={cartCount}
         wishlistCount={wishlist.length}
