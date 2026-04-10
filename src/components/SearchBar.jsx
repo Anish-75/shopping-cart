@@ -15,11 +15,11 @@ function SearchBar({ onSearch, placeholder = "Search products..." }) {
   };
 
   return (
-    <div className="w-full max-w-5xl">
-      <div className="bg-white/95 border border-blue-100 shadow-xl rounded-3xl px-6 py-4 flex items-center gap-4">
-        <div className="bg-blue-50 text-blue-600 rounded-3xl p-3 shadow-sm">
+    <div className="w-full max-w-5xl px-4 sm:px-0">
+      <div className="bg-white/95 border border-blue-100 shadow-xl rounded-2xl sm:rounded-3xl px-4 sm:px-6 py-3 sm:py-4 flex items-center gap-3 sm:gap-4">
+        <div className="bg-blue-50 text-blue-600 rounded-2xl sm:rounded-3xl p-2 sm:p-3 shadow-sm flex-shrink-0">
           <svg
-            className="w-6 h-6"
+            className="w-5 h-5 sm:w-6 sm:h-6"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -32,21 +32,21 @@ function SearchBar({ onSearch, placeholder = "Search products..." }) {
             />
           </svg>
         </div>
-        <div className="relative flex-1">
+        <div className="relative flex-1 min-w-0">
           <input
             type="text"
             value={searchTerm}
             onChange={handleChange}
             placeholder={placeholder}
-            className="w-full bg-transparent border-none px-4 py-3 pr-14 text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-0"
+            className="w-full bg-transparent border-none px-3 sm:px-4 py-2 sm:py-3 pr-10 sm:pr-14 text-sm sm:text-base text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-0"
           />
           {searchTerm && (
             <button
               onClick={handleClear}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-2"
+              className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1.5 sm:p-2 flex-shrink-0"
             >
               <svg
-                className="w-5 h-5"
+                className="w-4 h-4 sm:w-5 sm:h-5"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -60,7 +60,6 @@ function SearchBar({ onSearch, placeholder = "Search products..." }) {
           )}
         </div>
       </div>
-      
     </div>
   );
 }

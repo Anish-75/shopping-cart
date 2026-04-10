@@ -20,9 +20,9 @@ function ProductCard({ product, onAddToCart, cart = [], wishlist = [], onWishlis
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col border border-blue-100/50">
+    <div className="bg-white rounded-lg sm:rounded-2xl shadow-md overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col border border-blue-100/50">
       {/* Image Section */}
-      <div className="relative overflow-hidden h-48 bg-gradient-to-br from-blue-50 to-cyan-50 group">
+      <div className="relative overflow-hidden h-36 sm:h-48 bg-gradient-to-br from-blue-50 to-cyan-50 group">
         <img
           src={product.thumbnail}
           alt={product.title}
@@ -31,10 +31,10 @@ function ProductCard({ product, onAddToCart, cart = [], wishlist = [], onWishlis
         {/* Wishlist Button */}
         <button
           onClick={handleWishlistToggle}
-          className="absolute top-3 right-3 bg-white/80 backdrop-blur-md hover:bg-white rounded-full p-2 transition-all shadow-md"
+          className="absolute top-2 sm:top-3 right-2 sm:right-3 bg-white/80 backdrop-blur-md hover:bg-white rounded-full p-1.5 sm:p-2 transition-all shadow-md"
         >
           <svg
-            className={`w-5 h-5 ${
+            className={`w-4 h-4 sm:w-5 sm:h-5 ${
               isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-600'
             }`}
             fill={isWishlisted ? 'currentColor' : 'none'}
@@ -51,8 +51,8 @@ function ProductCard({ product, onAddToCart, cart = [], wishlist = [], onWishlis
         </button>
       </div>
 
-      <div className="p-5 flex flex-col flex-1">
-        <h3 className="font-semibold text-gray-900 truncate text-lg">{product.title}</h3>
+      <div className="p-3 sm:p-5 flex flex-col flex-1">
+        <h3 className="font-semibold text-gray-900 truncate text-base sm:text-lg">{product.title}</h3>
         
         {/* Rating */}
         <div className="mt-2">
@@ -62,23 +62,23 @@ function ProductCard({ product, onAddToCart, cart = [], wishlist = [], onWishlis
           />
         </div>
 
-        <p className="text-gray-500 text-sm mt-2 line-clamp-2 flex-1 leading-relaxed">
+        <p className="text-gray-500 text-xs sm:text-sm mt-2 line-clamp-2 flex-1 leading-relaxed">
           {product.description}
         </p>
 
         {/* Stock Indicator */}
         <StockIndicator stock={stock} />
 
-        <div className="mt-5 space-y-3">
-          <div className="flex justify-between items-center gap-3">
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+        <div className="mt-4 sm:mt-5 space-y-2 sm:space-y-3">
+          <div className="flex justify-between items-center gap-2 sm:gap-3">
+            <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
               ₹{product.price}
             </span>
             <div className="relative">
               <button
                 onClick={handleAddClick}
                 disabled={stock === 0}
-                className={`text-white text-sm px-5 py-2.5 rounded-xl transition-all duration-200 font-medium shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed ${
+                className={`text-white text-xs sm:text-sm px-3 sm:px-5 py-1.5 sm:py-2.5 rounded-lg sm:rounded-xl transition-all duration-200 font-medium shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed ${
                   isAdded
                     ? 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600'
                     : 'bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600'
@@ -87,16 +87,16 @@ function ProductCard({ product, onAddToCart, cart = [], wishlist = [], onWishlis
                 {isAdded ? '✓ Added' : stock === 0 ? 'Out of Stock' : 'Add to Cart'}
               </button>
               {quantityInCart > 0 && (
-                <span className="absolute -top-3 -right-3 bg-gradient-to-r from-orange-400 to-orange-500 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center shadow-lg">
+                <span className="absolute -top-3 -right-3 bg-gradient-to-r from-orange-400 to-orange-500 text-white text-xs font-bold w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center shadow-lg text-[10px] sm:text-xs">
                   {quantityInCart}
                 </span>
               )}
             </div>
           </div>
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center justify-between gap-2 sm:gap-3">
             <button
               onClick={() => onViewDetails && onViewDetails(product)}
-              className="text-blue-600 text-sm font-semibold hover:underline"
+              className="text-blue-600 text-xs sm:text-sm font-semibold hover:underline"
             >
               View Details
             </button>

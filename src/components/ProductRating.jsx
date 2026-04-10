@@ -3,12 +3,12 @@ function ProductRating({ rating, reviewCount }) {
   const displayRating = rating.toFixed(1);
 
   return (
-    <div className="flex items-center gap-2">
-      <div className="flex items-center">
+    <div className="flex items-center gap-1.5 sm:gap-2">
+      <div className="flex items-center gap-0.5">
         {[...Array(5)].map((_, i) => (
           <svg
             key={i}
-            className={`w-4 h-4 ${
+            className={`w-3 h-3 sm:w-4 sm:h-4 ${
               i < stars ? 'text-yellow-400' : 'text-gray-300'
             }`}
             fill="currentColor"
@@ -18,7 +18,7 @@ function ProductRating({ rating, reviewCount }) {
           </svg>
         ))}
       </div>
-      <span className="text-sm font-semibold text-gray-700">{displayRating}</span>
+      <span className="text-xs sm:text-sm font-semibold text-gray-700">{displayRating}</span>
       {reviewCount > 0 && (
         <span className="text-xs text-gray-500">({reviewCount})</span>
       )}
